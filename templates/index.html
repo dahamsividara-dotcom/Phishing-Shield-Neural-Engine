@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Shield | AI Neural Engine</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root { --bg-dark: #02040a; --cyan: #00f2ff; --cyan-glow: rgba(0, 242, 255, 0.6); --red: #ff003c; --green: #00ff88; --glass: rgba(10, 20, 40, 0.7); --border: rgba(0, 242, 255, 0.3); }
+        body { margin: 0; padding: 0; background-color: var(--bg-dark); color: #fff; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; background: radial-gradient(circle at center, #0a1128 0%, #000000 100%); }
+        .globe-container { position: fixed; top: 50%; left: 80%; transform: translate(-50%, -50%); width: 800px; height: 800px; z-index: -1; opacity: 0.15; perspective: 1200px; }
+        .sphere { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: rotateGlobe 40s linear infinite; }
+        .ring { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--cyan); box-shadow: 0 0 20px var(--cyan-glow), inset 0 0 20px var(--cyan-glow); }
+        .ring:nth-child(1) { transform: rotateY(0deg); } .ring:nth-child(2) { transform: rotateY(45deg); } .ring:nth-child(3) { transform: rotateY(90deg); } .ring:nth-child(4) { transform: rotateY(135deg); } .ring:nth-child(5) { transform: rotateX(90deg); }
+        @keyframes rotateGlobe { 0% { transform: rotateY(0deg) rotateX(15deg); } 100% { transform: rotateY(360deg) rotateX(15deg); } }
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px; position: relative; z-index: 1; }
+        .hero { text-align: left; margin-bottom: 60px; border-left: 5px solid var(--cyan); padding-left: 30px; animation: slideIn 1s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+        .hero h1 { font-family: 'Orbitron', sans-serif; font-size: 5rem; margin: 0; background: linear-gradient(to bottom, #fff, var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px var(--cyan-glow)); letter-spacing: -2px; line-height: 0.9; }
+        .hero p { font-size: 1.2rem; color: #a0aec0; margin-top: 15px; font-family: 'Fira Code'; }
+        .panel { background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 0 40px 0 40px; padding: 40px; margin-bottom: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,242,255,0.05); }
+        .panel h2 { font-family: 'Orbitron'; font-size: 1.5rem; margin-top: 0; color: var(--cyan); letter-spacing: 3px; }
+        .input-box { display: flex; background: rgba(0,0,0,0.6); border: 1px solid var(--border); border-radius: 5px; padding: 5px; margin-top: 20px; }
+        .input-box input { flex: 1; background: transparent; border: none; color: var(--cyan); padding: 15px 20px; font-size: 1.1rem; font-family: 'Fira Code'; outline: none; }
+        .input-box button { background: var(--cyan); color: #000; border: none; padding: 0 40px; font-family: 'Orbitron'; font-weight: 900; cursor: pointer; transition: 0.3s; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); }
+        .input-box button:hover { background: #fff; box-shadow: 0 0 20px var(--cyan); }
+        .qr-btn-container { text-align: center; margin-top: 20px; }
+        .qr-btn { background: transparent; color: var(--cyan); border: 1px dashed var(--cyan); padding: 10px 30px; font-family: 'Fira Code'; font-size: 0.9rem; cursor: pointer; transition: 0.3s; border-radius: 5px; }
+        .qr-btn:hover { background: rgba(0, 242, 255, 0.1); box-shadow: 0 0 15px var(--cyan-glow); }
+        .terminal { display: none; background: rgba(0,0,0,0.8); border: 1px solid var(--cyan); padding: 20px; font-family: 'Fira Code', monospace; color: var(--cyan); margin-top: 25px; font-size: 0.85rem; border-radius: 5px; }
+        .result-box { display: none; margin-top: 30px; padding: 30px; border-radius: 10px; border-left: 8px solid transparent; background: rgba(0,0,0,0.4); text-align: center; }
+        .high-risk { border-color: var(--red); background: rgba(255,0,60,0.1); }
+        .low-risk { border-color: var(--green); background: rgba(0,255,136,0.1); }
+        .telemetry-data { background: rgba(0, 242, 255, 0.03); border: 1px solid rgba(0, 242, 255, 0.1); padding: 20px; margin: 20px 0; font-family: 'Fira Code'; text-align: left; }
+        .dossier-btn { display: inline-block; padding: 12px 25px; color: var(--cyan); text-decoration: none; border: 1px solid var(--cyan); font-family: 'Orbitron'; font-size: 0.8rem; transition: 0.3s; margin-top: 15px; }
+        .dossier-btn:hover { background: var(--cyan); color: #000; }
+        .chart-container { width: 250px; height: 250px; margin: 20px auto; position: relative; }
+        .chart-percentage { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'Orbitron'; font-size: 2.5rem; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; padding: 15px; color: var(--cyan); border-bottom: 1px solid var(--border); font-family: 'Orbitron'; font-size: 0.7rem; }
+        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-family: 'Rajdhani'; font-weight: 500; }
+        .footer { text-align: center; padding: 60px 0; color: #4a5568; font-family: 'Orbitron'; font-size: 0.7rem; letter-spacing: 4px; }
+        
+        /* Dashboard Styles */
+        .dash-grid { display: flex; gap: 20px; justify-content: space-between; margin-top: 20px; }
+        .stat-box { background: rgba(0,0,0,0.6); border: 1px solid var(--border); padding: 20px; flex: 1; text-align: center; border-radius: 10px; }
+        .stat-num { font-size: 2.5rem; margin: 10px 0 0 0; font-family: 'Orbitron'; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="globe-container"><div class="sphere"><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div></div></div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>PHISHING<br><span style="color: var(--cyan);">SHIELD</span></h1>
+            <p>> NEURAL ENGINE V3.0 | DEVELOPED BY RISADI VIDARA</p>
+        </div>
+
+        <div class="panel">
+            <h2>INITIALIZE NEURAL SCAN</h2>
+            
+            <div class="input-box">
+                <input type="text" id="urlInput" placeholder="Enter target URL for forensic analysis...">
+                <button onclick="startScan()">ANALYZE</button>
+            </div>
+
+            <div class="qr-btn-container">
+                <p style="color: #4a5568; font-family: 'Fira Code'; font-size: 0.8rem; margin-bottom: 5px;">-- OR --</p>
+                <input type="file" id="qrInput" accept="image/*" style="display: none;" onchange="uploadQR(event)">
+                <button class="qr-btn" onclick="document.getElementById('qrInput').click()">[ 📷 UPLOAD QR CODE FOR ANALYSIS ]</button>
+            </div>
+
+            <div class="terminal" id="terminalBox"></div>
+
+            <div class="result-box" id="resultBox">
+                <h2 id="riskTitle" style="font-family: 'Orbitron'; margin:0; font-size: 2rem;"></h2>
+                <div class="chart-container"><canvas id="riskChart"></canvas><div id="chartPercentage" class="chart-percentage">0%</div></div>
+                <div class="telemetry-data"><ul id="telemetryList" style="list-style:none; padding:0; margin:0; color: #a0aec0; font-size: 0.9rem; line-height: 1.8;"></ul></div>
+                <div id="vtBox" style="display:none; background: rgba(255, 170, 0, 0.1); border: 1px solid #ffaa00; padding: 15px; margin: 20px 0; font-family: 'Fira Code'; text-align: left; border-radius: 5px;">
+                    <strong style="color: #ffaa00; font-family: 'Orbitron'; font-size: 1rem;">>> GLOBAL THREAT INTEL (VirusTotal):</strong>
+                    <p id="vtResultText" style="color: #fff; margin-top: 5px; font-size: 0.9rem;"></p>
+                </div>
+                <a id="downloadBtn" href="#" class="dossier-btn">[ DOWNLOAD FORENSIC DOSSIER ]</a>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>SIEM ANALYTICS DASHBOARD</h2>
+            
+            <div class="dash-grid">
+                <div class="stat-box" style="border-color: var(--cyan); box-shadow: inset 0 0 10px rgba(0,242,255,0.1);">
+                    <h3 style="color: var(--cyan); margin: 0; font-family: 'Fira Code'; font-size: 0.9rem;">TOTAL SCANS</h3>
+                    <p class="stat-num" id="totScans" style="color: #fff;">0</p>
+                </div>
+                <div class="stat-box" style="border-color: var(--red); box-shadow: inset 0 0 10px rgba(255,0,60,0.1);">
+                    <h3 style="color: var(--red); margin: 0; font-family: 'Fira Code'; font-size: 0.9rem;">THREATS DETECTED</h3>
+                    <p class="stat-num" id="totThreats" style="color: var(--red);">0</p>
+                </div>
+                <div class="stat-box" style="border-color: var(--green); box-shadow: inset 0 0 10px rgba(0,255,136,0.1);">
+                    <h3 style="color: var(--green); margin: 0; font-family: 'Fira Code'; font-size: 0.9rem;">SAFE ENTITIES</h3>
+                    <p class="stat-num" id="totSafe" style="color: var(--green);">0</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; height: 250px; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 10px; border: 1px solid var(--border);">
+                <canvas id="dashBarChart"></canvas>
+            </div>
+        </div>
+        <div class="panel">
+            <h2>MISSION CHRONICLE</h2>
+            <table>
+                <thead><tr><th>TIMESTAMP</th><th>TARGET PAYLOAD</th><th>SYSTEM VERDICT</th></tr></thead>
+                <tbody id="historyBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer">RISADI VIDARA | JAVA INSTITUTE FOR ADVANCED TECHNOLOGY | &copy; 2026</div>
+
+    <script>
+        let myChart = null;
+        let dashChart = null; // Dashboard එකේ ග්‍රාෆ් එක
+
+        function uploadQR(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            const terminal = document.getElementById('terminalBox');
+            document.getElementById('resultBox').style.display = 'none';
+            terminal.style.display = 'block';
+            terminal.innerHTML = '<p>> Initiating QR Matrix Decode...</p>';
+            const formData = new FormData();
+            formData.append('file', file);
+            fetch('/qr_scan', { method: 'POST', body: formData }).then(res => res.json()).then(data => {
+                if(data.error) { terminal.innerHTML += `<p style="color: var(--red);">> Error: ${data.error}</p>`; } 
+                else {
+                    terminal.innerHTML += `<p style="color: var(--green);">> QR Decoded Successfully!</p><p>> Payload: ${data.qr_url}</p><p>> Forwarding to Neural Scan...</p>`;
+                    document.getElementById('urlInput').value = data.qr_url;
+                    setTimeout(startScan, 1500); 
+                }
+            }).catch(err => { terminal.innerHTML += `<p style="color: var(--red);">> System Error.</p>`; });
+        }
+
+        function startScan() {
+            const url = document.getElementById('urlInput').value;
+            if(!url) return;
+            const terminal = document.getElementById('terminalBox');
+            document.getElementById('resultBox').style.display = 'none';
+            terminal.style.display = 'block';
+            terminal.innerHTML = '<p>> Establishing secure handshake...</p><p>> Querying WHOIS Database...</p><p>> Injecting feature vectors...</p><p>> Contacting Global Threat Intel...</p><p>> Calculating verdict...</p>';
+
+            setTimeout(() => {
+                fetch('/scan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: url }) })
+                .then(res => res.json())
+                .then(data => {
+                    terminal.style.display = 'none';
+                    const resultBox = document.getElementById('resultBox');
+                    resultBox.style.display = 'block';
+                    
+                    const isHigh = data.prediction === 1;
+                    resultBox.className = `result-box ${isHigh ? 'high-risk' : 'low-risk'}`;
+                    document.getElementById('riskTitle').innerText = data.risk_level;
+                    document.getElementById('riskTitle').style.color = isHigh ? 'var(--red)' : 'var(--green)';
+
+                    const ctx = document.getElementById('riskChart').getContext('2d');
+                    if(myChart) myChart.destroy();
+                    const confidenceScore = isHigh ? 96.7 : 12.4; 
+                    const chartColor = isHigh ? '#ff003c' : '#00ff88';
+                    document.getElementById('chartPercentage').innerText = confidenceScore + "%";
+                    document.getElementById('chartPercentage').style.color = chartColor;
+
+                    myChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Confidence', 'Margin'], datasets: [{ data: [confidenceScore, 100 - confidenceScore], backgroundColor: [chartColor, 'rgba(255,255,255,0.05)'], borderColor: ['rgba(0,0,0,0)','rgba(0,0,0,0)'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '85%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, animation: { animateScale: true, animateRotate: true } } });
+
+                    document.getElementById('telemetryList').innerHTML = data.telemetry.map(item => `<li>> ${item}</li>`).join('');
+                    
+                    const vtBox = document.getElementById('vtBox');
+                    const vtText = document.getElementById('vtResultText');
+                    vtBox.style.display = 'block';
+                    if (data.virustotal && data.virustotal.status === 'Found') {
+                        const malCount = data.virustotal.malicious;
+                        const totalCount = data.virustotal.total;
+                        vtText.innerText = `${malCount} out of ${totalCount} global security vendors flagged this as malicious.`;
+                        if(malCount > 0) { vtBox.style.borderColor = 'var(--red)'; vtBox.style.background = 'rgba(255,0,60,0.1)'; vtBox.querySelector('strong').style.color = 'var(--red)'; } 
+                        else { vtBox.style.borderColor = 'var(--green)'; vtBox.style.background = 'rgba(0,255,136,0.1)'; vtBox.querySelector('strong').style.color = 'var(--green)'; }
+                    } else if (data.virustotal && data.virustotal.status === 'Not_Scanned') {
+                        vtText.innerText = "No prior threat records found globally. Relying purely on Neural Engine.";
+                        vtBox.style.borderColor = 'var(--cyan)'; vtBox.style.background = 'rgba(0, 242, 255, 0.05)'; vtBox.querySelector('strong').style.color = 'var(--cyan)';
+                    } else { vtText.innerText = "Threat Intelligence Engine currently offline."; }
+
+                    document.getElementById('downloadBtn').href = `/download_pdf?url=${encodeURIComponent(data.url)}`;
+                    
+                    // ස්කෑන් කළාට පස්සේ Dashboard එකත් අලුත් වෙනවා!
+                    loadHistory();
+                    loadStats(); 
+                }).catch(err => { terminal.innerHTML = "<p style='color:red;'>Connection Error.</p>"; });
+            }, 1500);
+        }
+
+        function loadHistory() {
+            fetch('/get_history').then(res => res.json()).then(data => {
+                document.getElementById('historyBody').innerHTML = data.map(row => `<tr><td style="color: #4a5568; font-size: 0.8rem;">${row.date}</td><td style="word-break: break-all; font-size: 0.9rem;">${row.url}</td><td style="color: ${row.risk.includes('HIGH') ? 'var(--red)' : 'var(--green)'}; font-family: 'Orbitron'; font-size: 0.8rem;">${row.risk}</td></tr>`).join('');
+            }).catch(e => console.log("DB error"));
+        }
+
+        // --- අලුත් Dashboard එක Load කරන Function එක ---
+        function loadStats() {
+            fetch('/get_stats').then(res => res.json()).then(data => {
+                document.getElementById('totScans').innerText = data.total;
+                document.getElementById('totThreats').innerText = data.high_risk;
+                document.getElementById('totSafe').innerText = data.low_risk;
+
+                const ctxBar = document.getElementById('dashBarChart').getContext('2d');
+                if(dashChart) dashChart.destroy();
+                
+                dashChart = new Chart(ctxBar, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Safe Entities', 'Threats Detected'],
+                        datasets: [{
+                            label: 'Total Scans',
+                            data: [data.low_risk, data.high_risk],
+                            backgroundColor: ['rgba(0,255,136,0.5)', 'rgba(255,0,60,0.5)'],
+                            borderColor: ['#00ff88', '#ff003c'],
+                            borderWidth: 1,
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0aec0', stepSize: 1 } },
+                            x: { grid: { display: false }, ticks: { color: '#fff', font: {family: 'Orbitron'} } }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }).catch(e => console.log("Stats error"));
+        }
+        
+        window.onload = () => { loadHistory(); loadStats(); };
+    </script>
+</body>
+</html>

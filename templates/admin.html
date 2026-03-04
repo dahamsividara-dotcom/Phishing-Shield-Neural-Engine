@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECURE DATABASE | Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 50px; background-color: #02040a; color: #00f2ff; font-family: 'Fira Code', monospace; background-image: radial-gradient(circle at center, #0a1128 0%, #000000 100%); }
+        .container { max-width: 1000px; margin: 0 auto; background: rgba(10, 20, 40, 0.8); padding: 40px; border: 1px solid #00f2ff; box-shadow: 0 0 30px rgba(0,242,255,0.2); border-radius: 5px; }
+        h1 { font-family: 'Orbitron'; text-align: center; color: #ff003c; letter-spacing: 5px; }
+        .login-box { text-align: center; margin-top: 50px; }
+        input[type="password"] { padding: 15px; width: 300px; background: #000; border: 1px solid #00f2ff; color: #fff; font-family: 'Fira Code'; font-size: 1.2rem; text-align: center; outline: none; }
+        button { padding: 15px 40px; background: #00f2ff; color: #000; border: none; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        button:hover { background: #fff; box-shadow: 0 0 20px #00f2ff; }
+        #errorMsg { color: #ff003c; margin-top: 15px; }
+        #dbContainer { display: none; margin-top: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #000; }
+        th, td { padding: 12px; text-align: left; border: 1px solid rgba(0,242,255,0.3); }
+        th { background: rgba(0,242,255,0.1); font-family: 'Orbitron'; }
+        .high-risk { color: #ff003c; } .low-risk { color: #00ff88; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>>> CLASSIFIED DATABASE ACCESS <<</h1>
+        
+        <div id="loginBox" class="login-box">
+            <p>ENTER ADMINISTRATOR CREDENTIALS</p>
+            <input type="password" id="adminPass" placeholder="Password..."><br>
+            <button onclick="login()">DECRYPT</button>
+            <p id="errorMsg"></p>
+        </div>
+
+        <div id="dbContainer">
+            <p style="color: #00ff88;">> Authentication Successful. Connection established.</p>
+            <p>> Dumping total SQL records...</p>
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>TIMESTAMP</th><th>TARGET URL</th><th>VERDICT</th></tr>
+                </thead>
+                <tbody id="dbBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            const pass = document.getElementById('adminPass').value;
+            fetch('/api/admin_data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pass })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    document.getElementById('loginBox').style.display = 'none';
+                    document.getElementById('dbContainer').style.display = 'block';
+                    
+                    document.getElementById('dbBody').innerHTML = data.data.map(row => `
+                        <tr>
+                            <td>${row.id}</td>
+                            <td style="color: #888;">${row.date}</td>
+                            <td style="word-break: break-all;">${row.url}</td>
+                            <td class="${row.risk.includes('HIGH') ? 'high-risk' : 'low-risk'}">${row.risk}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    document.getElementById('errorMsg').innerText = "> " + data.error;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
